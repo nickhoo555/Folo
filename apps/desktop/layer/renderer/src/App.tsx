@@ -7,6 +7,7 @@ import { Outlet } from "react-router"
 
 import { useAppIsReady } from "./atoms/app"
 import { useUISettingKey } from "./atoms/settings/ui"
+import { useProtocolHandler } from "./hooks/biz/useProtocolHandler"
 import { applyAfterReadyCallbacks } from "./initialize/queue"
 import { removeAppSkeleton } from "./lib/app"
 import { appLog } from "./lib/log"
@@ -36,6 +37,7 @@ function App() {
 
 const AppLayer = () => {
   const appIsReady = useAppIsReady()
+  const { registerProtocolHandler } = useProtocolHandler()
 
   useEffect(() => {
     removeAppSkeleton()
@@ -45,6 +47,11 @@ const AppLayer = () => {
     appLog("App is ready", `${doneTime}ms`)
 
     applyAfterReadyCallbacks()
+
+    // Register protocol handler for web browsers
+    if (!IN_ELECTRON) {
+      registerProtocolHandler()
+    }
 
     if (isMobile()) {
       const handler = (e: MouseEvent) => {
@@ -56,7 +63,7 @@ const AppLayer = () => {
         document.removeEventListener("contextmenu", handler)
       }
     }
-  }, [appIsReady])
+  }, [appIsReady, registerProtocolHandler])
 
   return appIsReady ? <Outlet /> : <AppSkeleton />
 }

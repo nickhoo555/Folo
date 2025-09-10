@@ -22,6 +22,10 @@ export const router = routerCreator([
     errorElement: <ErrorElement />,
   },
   {
+    path: "/protocol-handler",
+    lazy: () => import("./pages/protocol-handler"),
+  },
+  {
     path: "*",
     element: <NotFound />,
   },
