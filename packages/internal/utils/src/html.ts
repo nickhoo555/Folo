@@ -50,6 +50,10 @@ export const parseHtml = (content: string, options?: ParseHtmlOptions) => {
 
   const rehypeSchema: Schema = { ...defaultSchema }
   rehypeSchema.tagNames = [...rehypeSchema.tagNames!, "math"]
+  rehypeSchema.protocols = {
+    ...rehypeSchema.protocols,
+    href: [...((rehypeSchema.protocols?.href as string[]) || []), "magnet"],
+  }
 
   if (noMedia) {
     rehypeSchema.tagNames = rehypeSchema.tagNames?.filter(
